@@ -3,14 +3,20 @@ package com.aura.kurshin.presentation.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
+import com.aura.kurshin.presentation.service.NotificationForegroundService
 import java.text.SimpleDateFormat
 import java.util.*
 
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+        Log.i("1111", "received = ${intent.action}")
+        if (intent.action == "com.example.myapp.CUSTOM_ACTION") {
+
+//        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
             val sharedPreferences = context.getSharedPreferences("BootEvents", Context.MODE_PRIVATE)
             val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
             val bootTime = dateFormat.format(Date())
@@ -26,10 +32,8 @@ class BootReceiver : BroadcastReceiver() {
                 putInt("boot_count_$bootCount", 1)
             }
 
-            // Reschedule notification if it was present before reboot
-            if (NotificationUtils.isNotificationScheduled(context)) {
-                NotificationUtils.scheduleNotification(context)
-            }
+            val serviceIntent = Intent(context, NotificationForegroundService::class.java)
+            ContextCompat.startForegroundService(context, serviceIntent)
         }
     }
 }

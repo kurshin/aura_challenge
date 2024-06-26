@@ -69,7 +69,6 @@ object NotificationUtils {
             NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, notification)
             return
         }
-
     }
 
     fun isNotificationScheduled(context: Context): Boolean {
